@@ -2,6 +2,24 @@
 
 모두의연구소 「AI가 이미지를 읽기까지」 05 실습 · 선택 과제 A (YOLO detection + segmentation)
 
+> **중고거래에 물건을 올리려는 사람을 위한 도구.** 팔 물건 사진 한 장만 올리면
+> 배경을 지운 판매용 사진, 카테고리 추천, 판매 글 초안을 만들고, 사진에 문제(너무 작게 찍힘, 사람이 찍힘 등)가 없는지 점검해 준다.
+> AI가 확신하지 못하면 자동으로 정하지 않고 판매자에게 확인을 부탁한다.
+
+### 한눈에 보기
+
+| ① 처음 화면: 무엇을 해 주는지와 전후 예시 | ② 바로 올릴 수 있는 경우 (노트북) |
+|---|---|
+| ![](docs/screenshots/01_home.jpg) | ![](docs/screenshots/02_laptop_ready.jpg) |
+| **③ AI가 확신하지 못한 경우 (의자)** | **④ 팔 물건은 없고 사람이 찍힌 경우 (버스)** |
+| ![](docs/screenshots/03_chair_needs_review.jpg) | ![](docs/screenshots/04_bus_privacy.jpg) |
+| **⑤ 판매자가 이름을 고치면 글 초안이 바로 바뀜 (가방)** | |
+| ![](docs/screenshots/05_backpack_seller_corrects.jpg) | |
+
+화면은 판매자가 일하는 순서대로 되어 있다: **① 판매용 사진 → ② 카테고리·이름 확인 → ③ 글 초안 복사 → ④ 사진 점검**. 박스·마스크 같은 AI 판단 근거는 맨 아래 「AI가 어떻게 판단했나」에 접어 두었다. 화면의 "AI 점수"는 확률이 아니라 모델이 매긴 점수(0~1)다.
+
+### 안에서 하는 일
+
 상품 사진 한 장을 넣으면
 
 1. **detection** (`yolo26n.pt`)이 물건을 찾아 박스·클래스·점수를 내고, 그 클래스를 **중고거래 카테고리**(디지털기기, 가구/인테리어, 가방/잡화 …)로 바꿔 태그를 붙인다.
@@ -17,12 +35,6 @@
    - **글 초안**: 제목, 카테고리, 태그, 본문. 브랜드·상태·가격처럼 사진으로 알 수 없는 것은 지어내지 않고 "(직접 입력)"으로 둔다.
 5. 대표 물건 점수가 **0.5 미만**이거나 **두 모델의 의견이 다르면** 자동으로 정하지 않고 **'확인 필요'** 로 둔다. 이때 웹 화면에서 판매자가 카테고리와 물건 이름을 고치면 글 초안이 바로 바뀐다.
 6. segmentation이 판매 물건을 못 찾고 detection만 찾았으면, 배경 제거 대신 **박스 영역을 잘라** 썸네일을 만든다(예: chair).
-
-| 자동 태그 (초기 화면) | 확인 필요 (초기 화면) | conf 0.50 (초기 화면) | 판매자가 이름을 고침 (현재 화면) |
-|---|---|---|---|
-| ![](docs/screenshots/01_laptop_auto_tag.jpg) | ![](docs/screenshots/02_chair_needs_review.jpg) | ![](docs/screenshots/03_laptop_conf_0.50.jpg) | ![](docs/screenshots/04_backpack_seller_corrects.jpg) |
-
-캡처 1~3은 판매자용 화면으로 바꾸기 전의 화면이다. 모델 결과(박스·마스크·점수)는 그때와 같다.
 
 ---
 
@@ -124,7 +136,7 @@ outputs/yolo/
 - 웹에서 chair를 올리면 chair **0.297**, dog 0.393 이 나왔다(명령줄은 0.326 / 0.319). 기록: `docs/evidence/chair_before_fix_jpeg_recompressed_0.297.jpg`.
 - 원인: Gradio `gr.Image` 의 기본값 `image_mode="RGB"`. chair.jpg는 흑백(L 모드)이라 Gradio가 RGB로 바꾼 뒤 **JPEG로 다시 저장**했고, 원본과 픽셀이 최대 23 차이 났다. Gradio 임시 폴더의 `chair.jpeg` 를 원본과 비교해 확인했다(MD5 다름).
 - 처음 시도한 `format="png"` 는 효과가 없었다. Gradio 6.31 소스(`image_utils.preprocess_image`)를 보면 업로드에는 원래 확장자를 쓰고 `format` 은 무시한다.
-- `image_mode=None` 으로 바꾸자 Gradio가 원본 파일을 그대로 넘겼고, 웹에서도 chair 0.326 / dog 0.319 로 명령줄과 같아졌다(`02_chair_needs_review.jpg` 는 고친 뒤 다시 찍음). 컬러 사진 3장은 처음부터 RGB라 영향이 없었다.
+- `image_mode=None` 으로 바꾸자 Gradio가 원본 파일을 그대로 넘겼고, 웹에서도 chair 0.326 / dog 0.319 로 명령줄과 같아졌다(`03_chair_needs_review.jpg` 의 "AI 점수 0.33"이 0.326을 반올림한 값이다. 고치기 전 값 0.297이면 0.30으로 나온다). 컬러 사진 3장은 처음부터 RGB라 영향이 없었다.
 
 ## 5. 예상과 실제
 

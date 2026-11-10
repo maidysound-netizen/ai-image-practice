@@ -1,6 +1,6 @@
 {
   "service": "중고거래 사진 도우미 (YOLO detection + segmentation)",
-  "created_at": "2026-11-10T07:10:26+00:00",
+  "created_at": "2026-11-10T09:11:41+00:00",
   "run_location": {
     "where": "local (내 Mac, CPU)",
     "os": "macOS-27.2.1-arm64-arm-64bit",

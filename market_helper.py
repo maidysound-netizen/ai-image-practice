@@ -55,6 +55,13 @@ KO_NAME = {
     "backpack": "백팩", "handbag": "핸드백", "suitcase": "캐리어", "tie": "넥타이", "umbrella": "우산",
     "book": "책", "teddy bear": "곰인형", "car": "자동차", "motorcycle": "오토바이",
     "person": "사람", "bus": "버스", "truck": "트럭",
+    # 판매 카테고리에는 없지만 화면에 '다른 AI는 ○○로 봤어요'로 나올 수 있는 나머지 COCO 클래스
+    "airplane": "비행기", "train": "기차", "boat": "배", "traffic light": "신호등", "fire hydrant": "소화전",
+    "stop sign": "정지 표지판", "parking meter": "주차 미터기", "bench": "벤치", "bird": "새", "cat": "고양이",
+    "dog": "개", "horse": "말", "sheep": "양", "cow": "소", "elephant": "코끼리", "bear": "곰",
+    "zebra": "얼룩말", "giraffe": "기린", "banana": "바나나", "apple": "사과", "sandwich": "샌드위치",
+    "orange": "오렌지", "broccoli": "브로콜리", "carrot": "당근", "hot dog": "핫도그", "pizza": "피자",
+    "donut": "도넛", "cake": "케이크", "toilet": "변기", "sink": "싱크대",
 }
 ANIMALS = {"bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe"}
 

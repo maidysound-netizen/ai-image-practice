@@ -19,7 +19,7 @@
       {
         "id": 0,
         "class": "fire hydrant",
-        "class_ko": "fire hydrant",
+        "class_ko": "소화전",
         "score": 0.345,
         "box_xyxy": [
           128.7,

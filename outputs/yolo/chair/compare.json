@@ -34,7 +34,7 @@
       {
         "id": 0,
         "class": "dog",
-        "class_ko": "dog",
+        "class_ko": "개",
         "score": 0.319,
         "box_xyxy": [
           69.5,
