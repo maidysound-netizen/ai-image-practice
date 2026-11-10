@@ -1,0 +1,22 @@
+{
+  "bus.jpg": {
+    "source": "Ultralytics 패키지에 들어 있는 예제 이미지 (ultralytics/assets/bus.jpg)",
+    "license": "Ultralytics 저장소 예제 자산 (AGPL-3.0 저장소에 포함), 과제에서 지정한 예제 사진",
+    "share": "교육용 예제로 사용"
+  },
+  "chair.jpg": {
+    "source": "https://commons.wikimedia.org/wiki/File:Desk_chair_MET_211351.jpg (The Metropolitan Museum of Art)",
+    "license": "CC0 1.0 (퍼블릭 도메인)",
+    "share": "제한 없음. 1280px 축소본 사용"
+  },
+  "laptop-desk.jpg": {
+    "source": "https://commons.wikimedia.org/wiki/File:Laptop_on_a_neat_desk_(Unsplash).jpg",
+    "license": "CC0 1.0 (퍼블릭 도메인)",
+    "share": "제한 없음. 1280px 축소본 사용"
+  },
+  "backpack.jpg": {
+    "source": "https://commons.wikimedia.org/wiki/File:Military_backpack_01.jpg",
+    "license": "CC0 1.0 (퍼블릭 도메인)",
+    "share": "제한 없음. 1280px 축소본 사용"
+  }
+}

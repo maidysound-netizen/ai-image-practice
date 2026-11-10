@@ -1,0 +1,26 @@
+{
+  "input": "backpack.jpg",
+  "image_size_wh": [
+    1280,
+    2122
+  ],
+  "settings": {
+    "imgsz": 640,
+    "device": "cpu",
+    "conf": 0.5,
+    "det_weights": "yolo26n.pt",
+    "seg_weights": "yolo26n-seg.pt"
+  },
+  "detections": [],
+  "segments": [],
+  "listing": {
+    "status": "확인 필요",
+    "review_reasons": [
+      "판매할 만한 물건을 찾지 못했습니다(모델이 아는 80종 밖이거나 점수가 임계값보다 낮음)."
+    ],
+    "main_item": null,
+    "suggested_tags": [],
+    "warnings": [],
+    "models_disagree": false
+  }
+}

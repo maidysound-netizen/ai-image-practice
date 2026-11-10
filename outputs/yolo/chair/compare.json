@@ -1,0 +1,57 @@
+{
+  "input": "chair.jpg",
+  "confs": [
+    0.25,
+    0.5
+  ],
+  "count": {
+    "conf_0.25": {
+      "detections": 1,
+      "segments": 1
+    },
+    "conf_0.50": {
+      "detections": 0,
+      "segments": 0
+    }
+  },
+  "only_at_low_conf": {
+    "detections": [
+      {
+        "id": 0,
+        "class": "chair",
+        "class_ko": "의자",
+        "score": 0.326,
+        "box_xyxy": [
+          38.6,
+          25.4,
+          1231.6,
+          1600.5
+        ],
+        "box_area_ratio": 0.8881
+      }
+    ],
+    "segments": [
+      {
+        "id": 0,
+        "class": "dog",
+        "class_ko": "dog",
+        "score": 0.319,
+        "box_xyxy": [
+          69.5,
+          772.6,
+          1212.7,
+          1619.5
+        ],
+        "mask_file": "masks/00_dog.png",
+        "mask_area_px": 250465,
+        "mask_area_ratio": 0.1184,
+        "mask_fill_of_box": 0.259,
+        "touches_edge": false
+      }
+    ]
+  },
+  "main_item": {
+    "conf_0.25": null,
+    "conf_0.50": null
+  }
+}

@@ -1,0 +1,13 @@
+# 가상환경 (exFAT 외장 드라이브 대신 내장 디스크 ~/.venvs 에 둔다)
+.venv/
+venv/
+# macOS가 exFAT 드라이브에 만드는 리소스 포크 파일
+._*
+.DS_Store
+# 웹 화면에서 올린 사진의 결과 (개인 사진이 들어갈 수 있어 올리지 않는다)
+outputs/yolo/web/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+# 다른 도구용 로컬 설정
+.claude/

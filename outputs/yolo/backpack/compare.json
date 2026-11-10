@@ -1,0 +1,67 @@
+{
+  "input": "backpack.jpg",
+  "confs": [
+    0.25,
+    0.5
+  ],
+  "count": {
+    "conf_0.25": {
+      "detections": 1,
+      "segments": 1
+    },
+    "conf_0.50": {
+      "detections": 0,
+      "segments": 0
+    }
+  },
+  "only_at_low_conf": {
+    "detections": [
+      {
+        "id": 0,
+        "class": "fire hydrant",
+        "class_ko": "fire hydrant",
+        "score": 0.345,
+        "box_xyxy": [
+          128.7,
+          89.8,
+          1105.4,
+          1629.7
+        ],
+        "box_area_ratio": 0.5537
+      }
+    ],
+    "segments": [
+      {
+        "id": 0,
+        "class": "suitcase",
+        "class_ko": "캐리어",
+        "score": 0.262,
+        "box_xyxy": [
+          124.8,
+          318.3,
+          1107.7,
+          1735.3
+        ],
+        "mask_file": "masks/00_suitcase.png",
+        "mask_area_px": 1068403,
+        "mask_area_ratio": 0.3934,
+        "mask_fill_of_box": 0.767,
+        "touches_edge": false
+      }
+    ]
+  },
+  "main_item": {
+    "conf_0.25": {
+      "class": "suitcase",
+      "name_ko": "캐리어",
+      "category": "가방/잡화",
+      "score": 0.262,
+      "segment_id": 0,
+      "detection_agrees": false,
+      "touches_edge": false,
+      "cutout_png": "cutout.png",
+      "cutout_white_jpg": "cutout_white.jpg"
+    },
+    "conf_0.50": null
+  }
+}

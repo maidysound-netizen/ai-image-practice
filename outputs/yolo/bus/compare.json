@@ -1,0 +1,25 @@
+{
+  "input": "bus.jpg",
+  "confs": [
+    0.25,
+    0.5
+  ],
+  "count": {
+    "conf_0.25": {
+      "detections": 5,
+      "segments": 5
+    },
+    "conf_0.50": {
+      "detections": 5,
+      "segments": 5
+    }
+  },
+  "only_at_low_conf": {
+    "detections": [],
+    "segments": []
+  },
+  "main_item": {
+    "conf_0.25": null,
+    "conf_0.50": null
+  }
+}

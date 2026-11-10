@@ -1,0 +1,68 @@
+{
+  "service": "중고거래 사진 도우미 (YOLO detection + segmentation)",
+  "created_at": "2026-11-10T06:57:00+00:00",
+  "run_location": {
+    "where": "local (내 Mac, CPU)",
+    "os": "macOS-27.2.1-arm64-arm-64bit",
+    "machine": "arm64"
+  },
+  "models": {
+    "detection": {
+      "weights": "yolo26n.pt",
+      "path": "models/yolo26n.pt"
+    },
+    "segmentation": {
+      "weights": "yolo26n-seg.pt",
+      "path": "models/yolo26n-seg.pt"
+    },
+    "classes": "COCO 80 classes (pretrained, 추가 학습 없음)"
+  },
+  "packages": {
+    "python": "3.12.16",
+    "ultralytics": "8.4.208",
+    "torch": "2.15.0",
+    "opencv": "5.0.0",
+    "numpy": "2.5.4"
+  },
+  "settings": {
+    "imgsz": 640,
+    "device": "cpu",
+    "confs": [
+      0.25,
+      0.5
+    ],
+    "min_main_area_ratio": 0.15
+  },
+  "inputs": [
+    {
+      "file": "input/backpack.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Military_backpack_01.jpg",
+      "license": "CC0 1.0 (퍼블릭 도메인)",
+      "share": "제한 없음. 1280px 축소본 사용"
+    },
+    {
+      "file": "input/bus.jpg",
+      "source": "Ultralytics 패키지에 들어 있는 예제 이미지 (ultralytics/assets/bus.jpg)",
+      "license": "Ultralytics 저장소 예제 자산 (AGPL-3.0 저장소에 포함), 과제에서 지정한 예제 사진",
+      "share": "교육용 예제로 사용"
+    },
+    {
+      "file": "input/chair.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Desk_chair_MET_211351.jpg (The Metropolitan Museum of Art)",
+      "license": "CC0 1.0 (퍼블릭 도메인)",
+      "share": "제한 없음. 1280px 축소본 사용"
+    },
+    {
+      "file": "input/laptop-desk.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Laptop_on_a_neat_desk_(Unsplash).jpg",
+      "license": "CC0 1.0 (퍼블릭 도메인)",
+      "share": "제한 없음. 1280px 축소본 사용"
+    }
+  ],
+  "outputs": [
+    "outputs/yolo/backpack/",
+    "outputs/yolo/bus/",
+    "outputs/yolo/chair/",
+    "outputs/yolo/laptop-desk/"
+  ]
+}

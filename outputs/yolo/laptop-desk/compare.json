@@ -1,0 +1,90 @@
+{
+  "input": "laptop-desk.jpg",
+  "confs": [
+    0.25,
+    0.5
+  ],
+  "count": {
+    "conf_0.25": {
+      "detections": 4,
+      "segments": 4
+    },
+    "conf_0.50": {
+      "detections": 2,
+      "segments": 3
+    }
+  },
+  "only_at_low_conf": {
+    "detections": [
+      {
+        "id": 2,
+        "class": "tv",
+        "class_ko": "TV/모니터",
+        "score": 0.385,
+        "box_xyxy": [
+          891.8,
+          0.0,
+          1279.6,
+          388.1
+        ],
+        "box_area_ratio": 0.1378
+      },
+      {
+        "id": 3,
+        "class": "keyboard",
+        "class_ko": "키보드",
+        "score": 0.314,
+        "box_xyxy": [
+          400.3,
+          483.6,
+          859.7,
+          603.3
+        ],
+        "box_area_ratio": 0.0503
+      }
+    ],
+    "segments": [
+      {
+        "id": 3,
+        "class": "keyboard",
+        "class_ko": "키보드",
+        "score": 0.278,
+        "box_xyxy": [
+          406.2,
+          488.7,
+          858.8,
+          604.5
+        ],
+        "mask_file": "masks/03_keyboard.png",
+        "mask_area_px": 30962,
+        "mask_area_ratio": 0.0284,
+        "mask_fill_of_box": 0.591,
+        "touches_edge": false
+      }
+    ]
+  },
+  "main_item": {
+    "conf_0.25": {
+      "class": "laptop",
+      "name_ko": "노트북",
+      "category": "디지털기기",
+      "score": 0.915,
+      "segment_id": 0,
+      "detection_agrees": true,
+      "touches_edge": false,
+      "cutout_png": "cutout.png",
+      "cutout_white_jpg": "cutout_white.jpg"
+    },
+    "conf_0.50": {
+      "class": "laptop",
+      "name_ko": "노트북",
+      "category": "디지털기기",
+      "score": 0.915,
+      "segment_id": 0,
+      "detection_agrees": true,
+      "touches_edge": false,
+      "cutout_png": "cutout.png",
+      "cutout_white_jpg": "cutout_white.jpg"
+    }
+  }
+}

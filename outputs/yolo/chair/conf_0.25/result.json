@@ -1,0 +1,60 @@
+{
+  "input": "chair.jpg",
+  "image_size_wh": [
+    1280,
+    1653
+  ],
+  "settings": {
+    "imgsz": 640,
+    "device": "cpu",
+    "conf": 0.25,
+    "det_weights": "yolo26n.pt",
+    "seg_weights": "yolo26n-seg.pt"
+  },
+  "detections": [
+    {
+      "id": 0,
+      "class": "chair",
+      "class_ko": "의자",
+      "score": 0.326,
+      "box_xyxy": [
+        38.6,
+        25.4,
+        1231.6,
+        1600.5
+      ],
+      "box_area_ratio": 0.8881
+    }
+  ],
+  "segments": [
+    {
+      "id": 0,
+      "class": "dog",
+      "class_ko": "dog",
+      "score": 0.319,
+      "box_xyxy": [
+        69.5,
+        772.6,
+        1212.7,
+        1619.5
+      ],
+      "mask_file": "masks/00_dog.png",
+      "mask_area_px": 250465,
+      "mask_area_ratio": 0.1184,
+      "mask_fill_of_box": 0.259,
+      "touches_edge": false
+    }
+  ],
+  "listing": {
+    "status": "확인 필요",
+    "review_reasons": [
+      "segmentation은 판매 물건을 못 찾았고, detection만 '의자'(점수 0.326)로 봤습니다. 누끼는 만들지 않았습니다."
+    ],
+    "main_item": null,
+    "suggested_tags": [],
+    "warnings": [
+      "동물이 찍혀 있습니다. 대부분의 중고거래 앱은 반려동물 거래를 금지합니다."
+    ],
+    "models_disagree": true
+  }
+}

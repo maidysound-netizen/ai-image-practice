@@ -1,0 +1,180 @@
+{
+  "input": "bus.jpg",
+  "image_size_wh": [
+    810,
+    1080
+  ],
+  "settings": {
+    "imgsz": 640,
+    "device": "cpu",
+    "conf": 0.25,
+    "det_weights": "yolo26n.pt",
+    "seg_weights": "yolo26n-seg.pt"
+  },
+  "detections": [
+    {
+      "id": 0,
+      "class": "bus",
+      "class_ko": "버스",
+      "score": 0.881,
+      "box_xyxy": [
+        0.0,
+        230.5,
+        803.1,
+        750.5
+      ],
+      "box_area_ratio": 0.4774
+    },
+    {
+      "id": 1,
+      "class": "person",
+      "class_ko": "사람",
+      "score": 0.872,
+      "box_xyxy": [
+        48.6,
+        397.7,
+        240.2,
+        902.4
+      ],
+      "box_area_ratio": 0.1105
+    },
+    {
+      "id": 2,
+      "class": "person",
+      "class_ko": "사람",
+      "score": 0.861,
+      "box_xyxy": [
+        222.9,
+        404.8,
+        345.5,
+        860.9
+      ],
+      "box_area_ratio": 0.0639
+    },
+    {
+      "id": 3,
+      "class": "person",
+      "class_ko": "사람",
+      "score": 0.847,
+      "box_xyxy": [
+        669.7,
+        394.6,
+        809.9,
+        879.5
+      ],
+      "box_area_ratio": 0.0777
+    },
+    {
+      "id": 4,
+      "class": "person",
+      "class_ko": "사람",
+      "score": 0.654,
+      "box_xyxy": [
+        0.2,
+        553.0,
+        59.7,
+        871.3
+      ],
+      "box_area_ratio": 0.0217
+    }
+  ],
+  "segments": [
+    {
+      "id": 0,
+      "class": "person",
+      "class_ko": "사람",
+      "score": 0.877,
+      "box_xyxy": [
+        52.8,
+        396.7,
+        243.5,
+        905.9
+      ],
+      "mask_file": "masks/00_person.png",
+      "mask_area_px": 48844,
+      "mask_area_ratio": 0.0558,
+      "mask_fill_of_box": 0.503,
+      "touches_edge": false
+    },
+    {
+      "id": 1,
+      "class": "person",
+      "class_ko": "사람",
+      "score": 0.863,
+      "box_xyxy": [
+        669.2,
+        396.3,
+        809.9,
+        880.4
+      ],
+      "mask_file": "masks/01_person.png",
+      "mask_area_px": 21035,
+      "mask_area_ratio": 0.024,
+      "mask_fill_of_box": 0.309,
+      "touches_edge": true
+    },
+    {
+      "id": 2,
+      "class": "bus",
+      "class_ko": "버스",
+      "score": 0.856,
+      "box_xyxy": [
+        4.7,
+        228.4,
+        806.6,
+        739.9
+      ],
+      "mask_file": "masks/02_bus.png",
+      "mask_area_px": 254502,
+      "mask_area_ratio": 0.2909,
+      "mask_fill_of_box": 0.621,
+      "touches_edge": false
+    },
+    {
+      "id": 3,
+      "class": "person",
+      "class_ko": "사람",
+      "score": 0.811,
+      "box_xyxy": [
+        221.1,
+        405.4,
+        344.5,
+        859.4
+      ],
+      "mask_file": "masks/03_person.png",
+      "mask_area_px": 33225,
+      "mask_area_ratio": 0.038,
+      "mask_fill_of_box": 0.593,
+      "touches_edge": false
+    },
+    {
+      "id": 4,
+      "class": "person",
+      "class_ko": "사람",
+      "score": 0.645,
+      "box_xyxy": [
+        0.5,
+        550.5,
+        74.1,
+        872.3
+      ],
+      "mask_file": "masks/04_person.png",
+      "mask_area_px": 10674,
+      "mask_area_ratio": 0.0122,
+      "mask_fill_of_box": 0.451,
+      "touches_edge": true
+    }
+  ],
+  "listing": {
+    "status": "확인 필요",
+    "review_reasons": [
+      "판매할 만한 물건을 찾지 못했습니다(모델이 아는 80종 밖이거나 점수가 임계값보다 낮음)."
+    ],
+    "main_item": null,
+    "suggested_tags": [],
+    "warnings": [
+      "사람 4명이 찍혀 있습니다. 얼굴·신상이 드러나지 않게 가리거나 다시 찍으세요(개인정보)."
+    ],
+    "models_disagree": false
+  }
+}
