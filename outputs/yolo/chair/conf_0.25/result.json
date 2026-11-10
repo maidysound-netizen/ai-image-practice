@@ -48,13 +48,63 @@
   "listing": {
     "status": "확인 필요",
     "review_reasons": [
-      "segmentation은 판매 물건을 못 찾았고, detection만 '의자'(점수 0.326)로 봤습니다. 누끼는 만들지 않았습니다."
+      "segmentation은 판매 물건을 못 찾았고, detection만 '의자'(점수 0.326)로 봤습니다. 배경을 지우지 못해 박스 영역만 잘라 썸네일을 만들었습니다.",
+      "segmentation만 동물로 봤습니다: dog(0.319). detection은 동물을 찾지 않아 오인일 수 있습니다."
     ],
-    "main_item": null,
+    "main_item": {
+      "class": "chair",
+      "name_ko": "의자",
+      "category": "가구/인테리어",
+      "score": 0.326,
+      "source": "detection",
+      "segment_id": null,
+      "detection_agrees": false,
+      "touches_edge": null,
+      "cutout_png": null,
+      "cutout_white_jpg": null
+    },
+    "listing_thumb": "listing_thumb.jpg",
+    "listing_thumb_source": "detection 박스 자르기(배경 그대로)",
+    "privacy_safe": null,
+    "parts_of_main": [],
     "suggested_tags": [],
-    "warnings": [
-      "동물이 찍혀 있습니다. 대부분의 중고거래 앱은 반려동물 거래를 금지합니다."
+    "checks": [
+      {
+        "item": "사람이 찍히지 않음",
+        "ok": true,
+        "detail": "사람 없음"
+      },
+      {
+        "item": "동물이 찍히지 않음",
+        "ok": null,
+        "detail": "한 모델만 동물로 봄 → 확인 필요"
+      }
     ],
-    "models_disagree": true
+    "warnings": [],
+    "models_disagree": true,
+    "draft": {
+      "title": "의자 팝니다",
+      "category": "가구/인테리어",
+      "tags": [
+        "가구",
+        "의자"
+      ],
+      "body": "의자 판매합니다.\n\n- 브랜드/모델명: (직접 입력)\n- 구매 시기·사용 기간: (직접 입력)\n- 상태: (흠집·고장·구성품 여부 직접 입력)\n- 가격: (직접 입력)\n- 거래 방법: (직거래 장소 / 택배)",
+      "auto_filled": [
+        "물건 이름",
+        "카테고리"
+      ],
+      "needs_seller": [
+        "브랜드/모델명",
+        "사용 기간",
+        "상태",
+        "가격",
+        "거래 방법"
+      ],
+      "photo_todo": [
+        "한 모델만 동물로 봄 → 확인 필요"
+      ],
+      "note": "물건 이름과 카테고리는 사진 인식으로 추천한 값입니다. 올리기 전에 확인하세요."
+    }
   }
 }

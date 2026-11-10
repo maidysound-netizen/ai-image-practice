@@ -171,10 +171,27 @@
       "판매할 만한 물건을 찾지 못했습니다(모델이 아는 80종 밖이거나 점수가 임계값보다 낮음)."
     ],
     "main_item": null,
+    "listing_thumb": null,
+    "listing_thumb_source": null,
+    "privacy_safe": "privacy_safe.jpg",
+    "parts_of_main": [],
     "suggested_tags": [],
-    "warnings": [
-      "사람 4명이 찍혀 있습니다. 얼굴·신상이 드러나지 않게 가리거나 다시 찍으세요(개인정보)."
+    "checks": [
+      {
+        "item": "사람이 찍히지 않음",
+        "ok": false,
+        "detail": "사람 4명 → 흐리게 처리한 사진을 쓰세요."
+      },
+      {
+        "item": "동물이 찍히지 않음",
+        "ok": true,
+        "detail": "동물 없음"
+      }
     ],
-    "models_disagree": false
+    "warnings": [
+      "사람 4명이 찍혀 있습니다. privacy_safe.jpg 에 사람을 흐리게 처리했습니다(개인정보)."
+    ],
+    "models_disagree": false,
+    "draft": null
   }
 }

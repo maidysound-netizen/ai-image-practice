@@ -64,6 +64,12 @@ MIN_MAIN_AREA_RATIO = 0.15
 REVIEW_SCORE = 0.50
 # 박스가 사진 가장자리에서 이 픽셀 이내면 '잘린 물건'으로 본다
 EDGE_PX = 3
+# 다른 물건 마스크의 이 비율 이상이 대표 물건 마스크 안에 있으면 대표 물건의 일부로 본다
+# (laptop-desk.jpg 에서 노트북 자체의 키보드를 '다른 물건'으로 세던 오경보를 막기 위해)
+PART_OF_RATIO = 0.5
+# 중고거래 앱 목록 썸네일: 정사각형, 흰 배경, 물건 둘레 여백
+THUMB_SIZE = 1080
+THUMB_MARGIN = 0.08
 
 
 def _iou(a, b) -> float:
@@ -95,6 +101,54 @@ def _versions() -> dict:
     }
 
 
+def _padded_box(box, w: int, h: int, pad_ratio: float = 0.05) -> tuple[int, int, int, int]:
+    x1, y1, x2, y2 = (int(round(v)) for v in box)
+    pad = int(pad_ratio * max(x2 - x1, y2 - y1))
+    return max(x1 - pad, 0), max(y1 - pad, 0), min(x2 + pad, w), min(y2 + pad, h)
+
+
+def _square_thumb(crop: np.ndarray, size: int = THUMB_SIZE, margin: float = THUMB_MARGIN) -> np.ndarray:
+    """잘라 낸 물건(BGR 또는 투명 배경 BGRA)을 흰 정사각형 가운데에 놓는다."""
+    if crop.shape[2] == 4:
+        a = crop[:, :, 3:4].astype(np.float32) / 255.0
+        crop = (crop[:, :, :3] * a + 255 * (1 - a)).astype(np.uint8)
+    inner = int(size * (1 - 2 * margin))
+    s = inner / max(crop.shape[:2])
+    crop = cv2.resize(crop, (max(1, int(crop.shape[1] * s)), max(1, int(crop.shape[0] * s))),
+                      interpolation=cv2.INTER_AREA)
+    canvas = np.full((size, size, 3), 255, np.uint8)
+    y0, x0 = (size - crop.shape[0]) // 2, (size - crop.shape[1]) // 2
+    canvas[y0:y0 + crop.shape[0], x0:x0 + crop.shape[1]] = crop
+    return canvas
+
+
+def draft_listing(listing: dict, category: str | None = None, name_ko: str | None = None) -> dict:
+    """판매 글 초안. 사진으로 알 수 없는 것(브랜드·상태·가격)은 지어내지 않고 빈칸으로 둔다."""
+    item = listing["main_item"]
+    name = name_ko or item["name_ko"]
+    cat = category or item["category"]
+    body = [
+        f"{name} 판매합니다.",
+        "",
+        "- 브랜드/모델명: (직접 입력)",
+        "- 구매 시기·사용 기간: (직접 입력)",
+        "- 상태: (흠집·고장·구성품 여부 직접 입력)",
+        "- 가격: (직접 입력)",
+        "- 거래 방법: (직거래 장소 / 택배)",
+    ]
+    todo = [c["detail"] for c in listing.get("checks", []) if c["ok"] is not True]
+    return {
+        "title": f"{name} 팝니다",
+        "category": cat,
+        "tags": sorted({name, cat.split("/")[0]}),
+        "body": "\n".join(body),
+        "auto_filled": ["물건 이름", "카테고리"],
+        "needs_seller": ["브랜드/모델명", "사용 기간", "상태", "가격", "거래 방법"],
+        "photo_todo": todo,
+        "note": "물건 이름과 카테고리는 사진 인식으로 추천한 값입니다. 올리기 전에 확인하세요.",
+    }
+
+
 def _box(b) -> list[float]:
     return [round(float(v), 1) for v in b]
 
@@ -109,6 +163,11 @@ def analyze(image_path: str | Path, conf: float = 0.25, out_root: Path = OUT_ROO
     img_area = float(h * w)
 
     out = out_root / image_path.stem / f"conf_{conf:.2f}"
+    # 같은 폴더에 이전 실행의 파일(예: 이번에는 만들지 않은 cutout.png)이 남지 않게 비우고 시작한다
+    if out.exists():
+        for f in list(out.glob("masks/*")) + [f for f in out.iterdir() if f.is_file()]:
+            # exFAT: macOS가 파일을 지울 때 짝인 ._파일도 함께 지우므로 이미 없을 수 있다
+            f.unlink(missing_ok=True)
     (out / "masks").mkdir(parents=True, exist_ok=True)
 
     det_model, seg_model = _models()
@@ -186,13 +245,19 @@ def analyze(image_path: str | Path, conf: float = 0.25, out_root: Path = OUT_ROO
         d["class"] == main["class"] and _iou(d["box_xyxy"], main["box_xyxy"]) >= 0.5 for d in detections
     )
 
+    fallback = None  # segmentation이 못 찾았을 때 detection 결과로 대신하는 대표 물건
+    checks = []  # 판매자에게 보여 줄 사진 점검표: {"item", "ok", "detail"}
+    parts = []   # 대표 물건의 일부로 본 대상(예: 노트북 안의 keyboard) → '다른 물건'으로 세지 않는다
+    thumb_source = None
+
     if main is None:
         det_sellable = [d for d in detections if d["class"] in CLASS_TO_CATEGORY]
         if det_sellable:
             best = max(det_sellable, key=lambda d: d["score"])
+            fallback = best
             review_reasons.append(
                 f"segmentation은 판매 물건을 못 찾았고, detection만 '{best['class_ko']}'(점수 {best['score']})로 봤습니다. "
-                f"누끼는 만들지 않았습니다."
+                f"배경을 지우지 못해 박스 영역만 잘라 썸네일을 만들었습니다."
             )
         else:
             review_reasons.append("판매할 만한 물건을 찾지 못했습니다(모델이 아는 80종 밖이거나 점수가 임계값보다 낮음).")
@@ -202,59 +267,119 @@ def analyze(image_path: str | Path, conf: float = 0.25, out_root: Path = OUT_ROO
         if not det_agrees:
             det_names = ", ".join(f"{d['class_ko']}({d['score']})" for d in detections) or "없음"
             review_reasons.append(f"detection 모델은 다르게 봤습니다: {det_names}.")
-        if main["touches_edge"]:
-            warnings.append(f"{main['class_ko']}이(가) 사진 가장자리에서 잘렸습니다. 전체가 나오게 찍으세요.")
         mask = cv2.imread(str(out / main["mask_file"]), cv2.IMREAD_GRAYSCALE)
-        x1, y1, x2, y2 = (int(round(v)) for v in main["box_xyxy"])
-        pad = int(0.05 * max(x2 - x1, y2 - y1))
-        x1, y1 = max(x1 - pad, 0), max(y1 - pad, 0)
-        x2, y2 = min(x2 + pad, w), min(y2 + pad, h)
+        x1, y1, x2, y2 = _padded_box(main["box_xyxy"], w, h)
         rgba = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)
         rgba[:, :, 3] = mask
         cv2.imwrite(str(out / "cutout.png"), rgba[y1:y2, x1:x2])  # 투명 배경
         white = img.copy()
         white[mask == 0] = 255
         cv2.imwrite(str(out / "cutout_white.jpg"), white[y1:y2, x1:x2])  # 흰 배경
+        cv2.imwrite(str(out / "listing_thumb.jpg"), _square_thumb(rgba[y1:y2, x1:x2]))
+        thumb_source = "segmentation 누끼"
 
-        if main["mask_area_ratio"] < MIN_MAIN_AREA_RATIO:
-            warnings.append(
-                f"{main['class_ko']}이(가) 사진의 {main['mask_area_ratio']:.0%}만 차지합니다. "
-                f"더 가까이에서 찍으면 목록 썸네일에서 잘 보입니다."
-            )
-        others = [s for s in sellable if s is not main]
+        # 다른 물건 중 마스크의 절반 이상이 대표 물건 마스크 안에 있으면 '부속'(예: 노트북의 키보드)으로 본다.
+        main_px = mask > 0
+        for s in sellable:
+            if s is main:
+                continue
+            m = cv2.imread(str(out / s["mask_file"]), cv2.IMREAD_GRAYSCALE) > 0
+            inside = float((m & main_px).sum()) / max(int(m.sum()), 1)
+            s["inside_main_ratio"] = round(inside, 3)
+            if inside >= PART_OF_RATIO:
+                parts.append(s)
+
+    if main is None and fallback is not None:
+        x1, y1, x2, y2 = _padded_box(fallback["box_xyxy"], w, h)
+        cv2.imwrite(str(out / "listing_thumb.jpg"), _square_thumb(img[y1:y2, x1:x2]))
+        thumb_source = "detection 박스 자르기(배경 그대로)"
+
+    # ---- 사진 점검표 (판매자용). 근거 숫자를 함께 적는다.
+    if main is not None:
+        big = main["mask_area_ratio"] >= MIN_MAIN_AREA_RATIO
+        checks.append({"item": "물건이 충분히 크게 찍힘", "ok": big,
+                       "detail": f"사진의 {main['mask_area_ratio']:.0%} (기준 {MIN_MAIN_AREA_RATIO:.0%})"
+                                 + ("" if big else " → 더 가까이에서 찍으면 목록 썸네일에서 잘 보입니다.")})
+        checks.append({"item": "물건 전체가 사진 안에 있음", "ok": not main["touches_edge"],
+                       "detail": "가장자리에 닿지 않음" if not main["touches_edge"] else "가장자리에서 잘림 → 전체가 나오게 다시 찍으세요."})
+        others = [s for s in sellable if s is not main and s not in parts]
+        names = ", ".join(sorted({s["class_ko"] for s in others}))
+        detail = f"함께 찍힌 물건: {names}" if others else "판매 물건만 찍힘"
+        if parts:
+            detail += f" (대표 물건의 일부로 보고 제외: {', '.join(sorted({p['class_ko'] for p in parts}))})"
+        checks.append({"item": "판매 물건만 찍힘", "ok": not others, "detail": detail})
+        if main["touches_edge"]:
+            warnings.append(f"{main['class_ko']}이(가) 사진 가장자리에서 잘렸습니다. 전체가 나오게 찍으세요.")
+        if not big:
+            warnings.append(f"{main['class_ko']}이(가) 사진의 {main['mask_area_ratio']:.0%}만 차지합니다. "
+                            f"더 가까이에서 찍으면 목록 썸네일에서 잘 보입니다.")
         if others:
-            names = ", ".join(sorted({s["class_ko"] for s in others}))
             warnings.append(f"다른 물건({names})도 같이 찍혀 있습니다. 판매 물건이 무엇인지 헷갈릴 수 있어요.")
 
+    # 사람: 한 모델만 봐도 경고하고 자동으로 흐리게 한다(개인정보는 놓치는 쪽이 더 위험).
     people = [s for s in segments if s["class"] == "person"]
+    privacy_file = None
     if people:
-        warnings.append(f"사람 {len(people)}명이 찍혀 있습니다. 얼굴·신상이 드러나지 않게 가리거나 다시 찍으세요(개인정보).")
+        warnings.append(f"사람 {len(people)}명이 찍혀 있습니다. privacy_safe.jpg 에 사람을 흐리게 처리했습니다(개인정보).")
+        blur_mask = np.zeros((h, w), np.uint8)
+        for p in people:
+            blur_mask |= cv2.imread(str(out / p["mask_file"]), cv2.IMREAD_GRAYSCALE)
+        k = max(15, (min(h, w) // 20) | 1)
+        blur_mask = cv2.dilate(blur_mask, np.ones((k, k), np.uint8))
+        blurred = cv2.GaussianBlur(img, (0, 0), sigmaX=k)
+        safe = img.copy()
+        safe[blur_mask > 0] = blurred[blur_mask > 0]
+        cv2.imwrite(str(out / "privacy_safe.jpg"), safe)
+        privacy_file = "privacy_safe.jpg"
+    checks.append({"item": "사람이 찍히지 않음", "ok": not people,
+                   "detail": "사람 없음" if not people else f"사람 {len(people)}명 → 흐리게 처리한 사진을 쓰세요."})
+
+    # 동물: 두 모델이 모두 동물로 봤을 때만 경고. 한쪽만 보면 오인일 수 있어 '확인 필요'로 돌린다
+    # (실제로 chair.jpg 에서 segmentation 이 의자 다리를 dog 로 봤다).
     animals = [s for s in segments if s["class"] in ANIMALS]
-    if animals:
+    det_animals = [d for d in detections if d["class"] in ANIMALS]
+    agreed = [a for a in animals if any(_iou(a["box_xyxy"], d["box_xyxy"]) >= 0.3 for d in det_animals)]
+    if agreed or (det_animals and not animals):
         warnings.append("동물이 찍혀 있습니다. 대부분의 중고거래 앱은 반려동물 거래를 금지합니다.")
+    elif animals:
+        names = ", ".join(f"{a['class']}({a['score']})" for a in animals)
+        review_reasons.append(f"segmentation만 동물로 봤습니다: {names}. detection은 동물을 찾지 않아 오인일 수 있습니다.")
+    # ok: True=통과, False=문제 있음, None=모델끼리 의견이 달라 사람이 봐야 함
+    checks.append({"item": "동물이 찍히지 않음",
+                   "ok": False if (agreed or det_animals) else (None if animals else True),
+                   "detail": "두 모델 모두 동물로 봄" if (agreed or det_animals)
+                   else ("한 모델만 동물로 봄 → 확인 필요" if animals else "동물 없음")})
 
     # detection과 segmentation이 서로 다르게 본 경우도 그대로 기록(숨기지 않음)
     det_classes = sorted(d["class"] for d in detections)
     seg_classes = sorted(s["class"] for s in segments)
 
+    item = main or fallback
     listing = {
         "status": "확인 필요" if review_reasons else "자동 태그 가능",
         "review_reasons": review_reasons,
-        "main_item": None if main is None else {
-            "class": main["class"],
-            "name_ko": main["class_ko"],
-            "category": CLASS_TO_CATEGORY[main["class"]],
-            "score": main["score"],
-            "segment_id": main["id"],
+        "main_item": None if item is None else {
+            "class": item["class"],
+            "name_ko": item["class_ko"],
+            "category": CLASS_TO_CATEGORY[item["class"]],
+            "score": item["score"],
+            "source": "segmentation" if main else "detection",
+            "segment_id": main["id"] if main else None,
             "detection_agrees": det_agrees,
-            "touches_edge": main["touches_edge"],
-            "cutout_png": "cutout.png",
-            "cutout_white_jpg": "cutout_white.jpg",
+            "touches_edge": main["touches_edge"] if main else None,
+            "cutout_png": "cutout.png" if main else None,
+            "cutout_white_jpg": "cutout_white.jpg" if main else None,
         },
-        "suggested_tags": sorted({CLASS_TO_CATEGORY[s["class"]] for s in sellable}),
+        "listing_thumb": "listing_thumb.jpg" if thumb_source else None,
+        "listing_thumb_source": thumb_source,
+        "privacy_safe": privacy_file,
+        "parts_of_main": [p["class"] for p in parts],
+        "suggested_tags": sorted({CLASS_TO_CATEGORY[s["class"]] for s in sellable if s not in parts}),
+        "checks": checks,
         "warnings": warnings,
         "models_disagree": det_classes != seg_classes,
     }
+    listing["draft"] = draft_listing(listing) if item else None
 
     result = {
         "input": str(image_path.name),

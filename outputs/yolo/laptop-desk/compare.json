@@ -59,7 +59,8 @@
         "mask_area_px": 30962,
         "mask_area_ratio": 0.0284,
         "mask_fill_of_box": 0.591,
-        "touches_edge": false
+        "touches_edge": false,
+        "inside_main_ratio": 0.993
       }
     ]
   },
@@ -69,6 +70,7 @@
       "name_ko": "노트북",
       "category": "디지털기기",
       "score": 0.915,
+      "source": "segmentation",
       "segment_id": 0,
       "detection_agrees": true,
       "touches_edge": false,
@@ -80,6 +82,7 @@
       "name_ko": "노트북",
       "category": "디지털기기",
       "score": 0.915,
+      "source": "segmentation",
       "segment_id": 0,
       "detection_agrees": true,
       "touches_edge": false,

@@ -56,16 +56,70 @@
       "name_ko": "캐리어",
       "category": "가방/잡화",
       "score": 0.262,
+      "source": "segmentation",
       "segment_id": 0,
       "detection_agrees": false,
       "touches_edge": false,
       "cutout_png": "cutout.png",
       "cutout_white_jpg": "cutout_white.jpg"
     },
+    "listing_thumb": "listing_thumb.jpg",
+    "listing_thumb_source": "segmentation 누끼",
+    "privacy_safe": null,
+    "parts_of_main": [],
     "suggested_tags": [
       "가방/잡화"
     ],
+    "checks": [
+      {
+        "item": "물건이 충분히 크게 찍힘",
+        "ok": true,
+        "detail": "사진의 39% (기준 15%)"
+      },
+      {
+        "item": "물건 전체가 사진 안에 있음",
+        "ok": true,
+        "detail": "가장자리에 닿지 않음"
+      },
+      {
+        "item": "판매 물건만 찍힘",
+        "ok": true,
+        "detail": "판매 물건만 찍힘"
+      },
+      {
+        "item": "사람이 찍히지 않음",
+        "ok": true,
+        "detail": "사람 없음"
+      },
+      {
+        "item": "동물이 찍히지 않음",
+        "ok": true,
+        "detail": "동물 없음"
+      }
+    ],
     "warnings": [],
-    "models_disagree": true
+    "models_disagree": true,
+    "draft": {
+      "title": "캐리어 팝니다",
+      "category": "가방/잡화",
+      "tags": [
+        "가방",
+        "캐리어"
+      ],
+      "body": "캐리어 판매합니다.\n\n- 브랜드/모델명: (직접 입력)\n- 구매 시기·사용 기간: (직접 입력)\n- 상태: (흠집·고장·구성품 여부 직접 입력)\n- 가격: (직접 입력)\n- 거래 방법: (직거래 장소 / 택배)",
+      "auto_filled": [
+        "물건 이름",
+        "카테고리"
+      ],
+      "needs_seller": [
+        "브랜드/모델명",
+        "사용 기간",
+        "상태",
+        "가격",
+        "거래 방법"
+      ],
+      "photo_todo": [],
+      "note": "물건 이름과 카테고리는 사진 인식으로 추천한 값입니다. 올리기 전에 확인하세요."
+    }
   }
 }

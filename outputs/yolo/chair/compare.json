@@ -51,7 +51,18 @@
     ]
   },
   "main_item": {
-    "conf_0.25": null,
+    "conf_0.25": {
+      "class": "chair",
+      "name_ko": "의자",
+      "category": "가구/인테리어",
+      "score": 0.326,
+      "source": "detection",
+      "segment_id": null,
+      "detection_agrees": false,
+      "touches_edge": null,
+      "cutout_png": null,
+      "cutout_white_jpg": null
+    },
     "conf_0.50": null
   }
 }

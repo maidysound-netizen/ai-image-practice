@@ -98,7 +98,8 @@
       "mask_area_px": 17951,
       "mask_area_ratio": 0.0164,
       "mask_fill_of_box": 0.743,
-      "touches_edge": false
+      "touches_edge": false,
+      "inside_main_ratio": 0.0
     },
     {
       "id": 2,
@@ -115,7 +116,8 @@
       "mask_area_px": 130782,
       "mask_area_ratio": 0.1198,
       "mask_fill_of_box": 0.889,
-      "touches_edge": true
+      "touches_edge": true,
+      "inside_main_ratio": 0.0
     },
     {
       "id": 3,
@@ -132,7 +134,8 @@
       "mask_area_px": 30962,
       "mask_area_ratio": 0.0284,
       "mask_fill_of_box": 0.591,
-      "touches_edge": false
+      "touches_edge": false,
+      "inside_main_ratio": 0.993
     }
   ],
   "listing": {
@@ -143,20 +146,79 @@
       "name_ko": "노트북",
       "category": "디지털기기",
       "score": 0.915,
+      "source": "segmentation",
       "segment_id": 0,
       "detection_agrees": true,
       "touches_edge": false,
       "cutout_png": "cutout.png",
       "cutout_white_jpg": "cutout_white.jpg"
     },
+    "listing_thumb": "listing_thumb.jpg",
+    "listing_thumb_source": "segmentation 누끼",
+    "privacy_safe": null,
+    "parts_of_main": [
+      "keyboard"
+    ],
     "suggested_tags": [
       "가구/인테리어",
       "디지털기기"
     ],
+    "checks": [
+      {
+        "item": "물건이 충분히 크게 찍힘",
+        "ok": false,
+        "detail": "사진의 9% (기준 15%) → 더 가까이에서 찍으면 목록 썸네일에서 잘 보입니다."
+      },
+      {
+        "item": "물건 전체가 사진 안에 있음",
+        "ok": true,
+        "detail": "가장자리에 닿지 않음"
+      },
+      {
+        "item": "판매 물건만 찍힘",
+        "ok": false,
+        "detail": "함께 찍힌 물건: TV/모니터, 화분 (대표 물건의 일부로 보고 제외: 키보드)"
+      },
+      {
+        "item": "사람이 찍히지 않음",
+        "ok": true,
+        "detail": "사람 없음"
+      },
+      {
+        "item": "동물이 찍히지 않음",
+        "ok": true,
+        "detail": "동물 없음"
+      }
+    ],
     "warnings": [
       "노트북이(가) 사진의 9%만 차지합니다. 더 가까이에서 찍으면 목록 썸네일에서 잘 보입니다.",
-      "다른 물건(TV/모니터, 키보드, 화분)도 같이 찍혀 있습니다. 판매 물건이 무엇인지 헷갈릴 수 있어요."
+      "다른 물건(TV/모니터, 화분)도 같이 찍혀 있습니다. 판매 물건이 무엇인지 헷갈릴 수 있어요."
     ],
-    "models_disagree": false
+    "models_disagree": false,
+    "draft": {
+      "title": "노트북 팝니다",
+      "category": "디지털기기",
+      "tags": [
+        "노트북",
+        "디지털기기"
+      ],
+      "body": "노트북 판매합니다.\n\n- 브랜드/모델명: (직접 입력)\n- 구매 시기·사용 기간: (직접 입력)\n- 상태: (흠집·고장·구성품 여부 직접 입력)\n- 가격: (직접 입력)\n- 거래 방법: (직거래 장소 / 택배)",
+      "auto_filled": [
+        "물건 이름",
+        "카테고리"
+      ],
+      "needs_seller": [
+        "브랜드/모델명",
+        "사용 기간",
+        "상태",
+        "가격",
+        "거래 방법"
+      ],
+      "photo_todo": [
+        "사진의 9% (기준 15%) → 더 가까이에서 찍으면 목록 썸네일에서 잘 보입니다.",
+        "함께 찍힌 물건: TV/모니터, 화분 (대표 물건의 일부로 보고 제외: 키보드)"
+      ],
+      "note": "물건 이름과 카테고리는 사진 인식으로 추천한 값입니다. 올리기 전에 확인하세요."
+    }
   }
 }

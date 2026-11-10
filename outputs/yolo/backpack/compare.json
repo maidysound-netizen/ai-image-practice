@@ -56,6 +56,7 @@
       "name_ko": "캐리어",
       "category": "가방/잡화",
       "score": 0.262,
+      "source": "segmentation",
       "segment_id": 0,
       "detection_agrees": false,
       "touches_edge": false,

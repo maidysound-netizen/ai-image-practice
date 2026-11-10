@@ -19,8 +19,25 @@
       "판매할 만한 물건을 찾지 못했습니다(모델이 아는 80종 밖이거나 점수가 임계값보다 낮음)."
     ],
     "main_item": null,
+    "listing_thumb": null,
+    "listing_thumb_source": null,
+    "privacy_safe": null,
+    "parts_of_main": [],
     "suggested_tags": [],
+    "checks": [
+      {
+        "item": "사람이 찍히지 않음",
+        "ok": true,
+        "detail": "사람 없음"
+      },
+      {
+        "item": "동물이 찍히지 않음",
+        "ok": true,
+        "detail": "동물 없음"
+      }
+    ],
     "warnings": [],
-    "models_disagree": false
+    "models_disagree": false,
+    "draft": null
   }
 }
