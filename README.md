@@ -38,27 +38,49 @@
 
 ---
 
-## 1. 실행 방법
+## 1. 실행 방법 (내 컴퓨터에 내려받아 실행하기)
+
+**준비물:** Python 3.12, git(없으면 GitHub의 **Code → Download ZIP** 으로 받아 압축을 풀어도 된다), 디스크 약 2 GB(torch), 처음 설치할 때 인터넷.
+가중치 `models/yolo26n.pt`, `models/yolo26n-seg.pt` 는 저장소에 들어 있다(각 5.5 MB, 6.7 MB). 모델을 따로 받을 필요는 없다.
+
+### macOS / Linux
 
 ```bash
-# 1) 가상환경 (아래 '왜 내장 디스크에 venv를 두나' 참고)
-python3.12 -m venv ~/.venvs/ai-image-practice
-~/.venvs/ai-image-practice/bin/pip install -r requirements.txt
+git clone https://github.com/maidysound-netizen/ai-image-practice.git
+cd ai-image-practice
+python3.12 -m venv .venv
+.venv/bin/pip install -r requirements.txt
 
-# 2) 명령줄: input/의 사진 4장을 conf 0.25 / 0.50 으로 돌리고 manifest.json 작성
-~/.venvs/ai-image-practice/bin/python run.py
-~/.venvs/ai-image-practice/bin/python run.py input/my-photo.jpg   # 사진 하나만
-
-# 3) 노트북 (출력이 들어 있는 상태로 저장됨, 다시 실행하려면)
-~/.venvs/ai-image-practice/bin/python -m jupyter nbconvert --to notebook --execute --inplace demo.ipynb
-
-# 4) 웹 화면 → http://127.0.0.1:7860
-~/.venvs/ai-image-practice/bin/python app.py
+.venv/bin/python app.py          # 웹 화면 → 브라우저에서 http://127.0.0.1:7860
+.venv/bin/python run.py          # 명령줄: input/ 사진 4장을 conf 0.25 / 0.50 으로 돌려 outputs/ 에 저장
+.venv/bin/python run.py input/my-photo.jpg   # 사진 하나만
 ```
 
-가중치 `models/yolo26n.pt`, `models/yolo26n-seg.pt` 는 저장소에 들어 있다(각 5.5 MB, 6.7 MB). 처음 실행해도 인터넷에서 받지 않는다.
+### Windows (PowerShell)
 
-**왜 내장 디스크에 venv를 두나.** 작업 폴더가 exFAT 외장 드라이브에 있다. macOS는 exFAT에 파일을 쓸 때마다 `._파일이름` 숨김 파일(리소스 포크)을 만든다. venv 안에 `._*.py`, `._*.dist-info` 가 생기면 pip/파이썬이 이것을 진짜 모듈·패키지 정보로 읽으려다 설치가 깨졌다. 그래서 venv는 내장 디스크 `~/.venvs/ai-image-practice` 에 두고, 코드·결과만 외장 드라이브에 둔다. 같은 이유로 코드에서 `input/` 을 읽을 때 `._` 로 시작하는 파일은 건너뛰고, 커밋 전에는 `find . -name '._*' -delete` 를 돌린다(`.gitignore` 에도 `._*` 가 있다).
+```powershell
+git clone https://github.com/maidysound-netizen/ai-image-practice.git
+cd ai-image-practice
+py -3.12 -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+
+.venv\Scripts\python app.py      # 웹 화면 → 브라우저에서 http://127.0.0.1:7860
+.venv\Scripts\python run.py      # 명령줄
+```
+
+### 노트북
+
+`demo.ipynb` 는 출력이 들어 있는 상태로 저장돼 있어서 GitHub에서 바로 볼 수 있다. 직접 다시 돌리려면:
+
+```bash
+.venv/bin/python -m jupyter nbconvert --to notebook --execute --inplace demo.ipynb
+```
+
+**참고:**
+- `requirements.txt` 의 버전은 macOS(Apple Silicon)에서 실제로 돌린 버전이다. Windows·Linux에서 설치가 안 되면 `pip install ultralytics gradio matplotlib nbconvert ipykernel` 로 최신 버전을 받아도 된다. 다만 그 경우 점수가 소수점 셋째 자리에서 조금 다를 수 있다.
+- 전부 CPU로 돈다. GPU는 필요 없다.
+
+**만든 사람 컴퓨터에서는 venv를 왜 `~/.venvs` 에 뒀나.** 작업 폴더가 exFAT 외장 드라이브에 있다. macOS는 exFAT에 파일을 쓸 때마다 `._파일이름` 숨김 파일(리소스 포크)을 만든다. venv 안에 `._*.py`, `._*.dist-info` 가 생기면 pip/파이썬이 이것을 진짜 모듈·패키지 정보로 읽으려다 설치가 깨졌다. 그래서 venv는 내장 디스크 `~/.venvs/ai-image-practice` 에 두고, 코드·결과만 외장 드라이브에 둔다. 같은 이유로 코드에서 `input/` 을 읽을 때 `._` 로 시작하는 파일은 건너뛰고, 커밋 전에는 `find . -name '._*' -delete` 를 돌린다(`.gitignore` 에도 `._*` 가 있다).
 
 ## 2. 실행 위치와 도구·설정을 고른 이유
 
